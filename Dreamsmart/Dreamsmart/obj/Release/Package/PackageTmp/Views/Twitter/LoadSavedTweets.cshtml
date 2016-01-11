@@ -1,0 +1,80 @@
+﻿@using GridMvc.Html
+@model IEnumerable<Dreamsmart.Models.Tweet>
+
+@{
+    ViewBag.Title = "RetrieveTweets";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="twitter, tweets, search, look for tweets, hash tags.">
+    <meta name="description" content="Search for twitter tweets based on specific hash tag keyword">
+    <title>NET Dreamsmart- Retrieve Twitter Tweets Based on Keyword</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+
+    <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+
+</head>
+<body>
+    <header></header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">NET Dreamsmart</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/Twitter/RetrieveTweets">Retrieve from Twitter API</a></li>
+                    <li class="active"><a href="#">Load Data from DB</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    @using (Html.BeginForm("LoadSavedTweets", "Twitter", FormMethod.Post))
+    {
+        <div style="margin-left:10px;">
+            <h3>Please enter the hashtag for the saved tweets that you want to retrieve from the DATABASE.</h3> <br />
+
+            # @Html.TextBox("Keyword", ViewData["txtHashTag"])
+            <input id="btnRetrieve" name="btnSubmit" type="submit" value="Retrieve" />
+
+        </div>
+
+        <div style="width:1200px;">
+            @Html.Grid(Model).Columns(columns =>
+   {
+       columns.Add(c => c.Id).Titled("Tweet ID");
+       columns.Add(c => c.TweetText).Titled("Tweet Text").Filterable(true);
+       columns.Add(c => c.CreatedBy).Titled("User").Filterable(true);
+       columns.Add(c => c.RetweetCount).Titled("Retweet Count").Filterable(true);
+       columns.Add(c => c.CreatedDate).Titled("Tweet Date");
+   }).WithPaging(50).Sortable(true)
+        </div>
+
+    }
+
+    <link href="/toast/toastr.css" rel="stylesheet" />
+    <script src="/jquery/jquery-1.11.3.min.js"></script>
+    <script src="/toast/toastr.js"></script>
+
+
+
+    @if (null != TempData["alertMessage"])
+    {
+        <script type="text/javascript">
+                 var message = '@TempData["alertMessage"]';
+                 alert(message);
+        </script>
+    }
+
+</body>
+
+</html>
